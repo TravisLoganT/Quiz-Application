@@ -1,5 +1,6 @@
 from string import ascii_lowercase
 
+
 def get_input():
 
     QUESTIONS = {
@@ -18,8 +19,10 @@ def get_input():
         for label, option in labelled_options.items():
             print(f" {label}) {option}")
 
-        answer_label = input("\nChoice? ")
-        answer = labelled_options.get(answer_label)
+        while (answer_label := input("\nChoice? ")) not in labelled_options:
+            print(f"Please answer one of {', '.join(labelled_options)}")
+
+        answer = labelled_options[answer_label]
         if answer == correct_answer:
             num_of_correct_answers +=1
             print("⭐️Correct⭐")
