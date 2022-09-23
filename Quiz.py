@@ -1,3 +1,5 @@
+from string import ascii_lowercase
+
 def get_input():
 
     QUESTIONS = {
@@ -7,18 +9,18 @@ def get_input():
         "How old is the White House": ["39", "69", "92", "145"]
     }
 
-    for question, options in QUESTIONS.items():
-        print(f"{question}?")
+    for number, (question, options) in enumerate(QUESTIONS.items(), start=1):
+        print(f"\nQuestion {number}:")
+        print(f"{question}")
         correct_answer = options[0]
-        sorted_options = sorted(options)
-
-        for label, option in enumerate(sorted_options):
+        labelled_options = dict(zip(ascii_lowercase, sorted(options)))
+        for label, option in labelled_options.items():
             print(f" {label}) {option}")
 
-        answer_label = int(input())
-        answer = sorted_options[answer_label]
+        answer_label = input("\nChoice? ")
+        answer = labelled_options.get(answer_label)
         if answer == correct_answer:
-            print("Correct!")
+            print("⭐️Correct⭐")
         else:
             print(f"The answer is {correct_answer!r}, not {answer!r}")
 
