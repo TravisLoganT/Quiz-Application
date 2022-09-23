@@ -8,13 +8,15 @@ def get_input():
     }
 
     for question, options in QUESTIONS.items():
-        print(question)
+        print(f"{question}?")
         correct_answer = options[0]
+        sorted_options = sorted(options)
 
-        for options in sorted(options):
-            print(f"  - {options}")
+        for label, option in enumerate(sorted_options):
+            print(f" {label}) {option}")
 
-        answer = input()
+        answer_label = int(input())
+        answer = sorted_options[answer_label]
         if answer == correct_answer:
             print("Correct!")
         else:
