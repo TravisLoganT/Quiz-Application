@@ -1,16 +1,13 @@
 from string import ascii_lowercase
 import random
+import pathlib
+try:
+    import tomllib
+except ModuleNotFoundError:
+    import tomli as tomllib
 
 NUM_QUESTIONS_PER_QUIZ = 5
-QUESTIONS = {
-        "When was the known use of the word 'quiz'": ["1781", "1771", "1871", "1881"],
-        "What Language was this program built in": ["Python", "Java", "C", "GoLang"],
-        "When was Travis Born": ["2002", "2003", "1999", "2000"],
-        "How old is the White House": ["39", "69", "92", "145"],
-        "What's the official name of the := operator": ["Assignment expression", "Named expression", "Walrus operator",
-                                                        "Colon equals operator",
-                                                        ]
-    }
+QUESTIONS_PATH = pathlib.Path(__file__).parent / "questions.toml"
 
 
 def get_answer(question, options):
@@ -25,11 +22,12 @@ def get_answer(question, options):
     return labelled_options[answer_label]
 
 
-def ask_question(question, options):
-    correct_answer = options[0]
+def ask_question(question):
+    correct_answer = question["answer"]
+    options = [question["answer"]] + question["options"]
     ordered_options = random.sample(options, k=len(options))
 
-    answer = get_answer(question, ordered_options)
+    answer = get_answer(question["question"], ordered_options)
     if answer == correct_answer:
         print("⭐️Correct⭐")
         return 1
@@ -39,19 +37,20 @@ def ask_question(question, options):
 
 
 def do_quiz():
-    questions = prepare_questions(QUESTIONS, NUM_QUESTIONS_PER_QUIZ)
+    questions = prepare_questions(QUESTIONS_PATH, NUM_QUESTIONS_PER_QUIZ)
 
     number_of_correct = 0
-    for number, (question, options) in enumerate(questions, start=1):
+    for number, question in enumerate(questions, start=1):
         print(f"\nQuestion {number}:")
-        number_of_correct += ask_question(question, options)
+        number_of_correct += ask_question(question)
 
     print(f"You got {number_of_correct} correct out of {number} questions")
 
 
-def prepare_questions(questions, number_of_questions):
+def prepare_questions(path, number_of_questions):
+    questions = tomllib.loads(path.read_text())["questions"]
     number_of_questions = min(number_of_questions, len(questions))
-    return random.sample(list(QUESTIONS.items()), k=number_of_questions)
+    return random.sample(list(questions), k=number_of_questions)
 
 
 if __name__ == '__main__':
